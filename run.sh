@@ -16,21 +16,11 @@ init_wercker_environment_variables() {
   then
     fail 'missing or empty option bucket, please check wercker.yml';
   fi
-
-  if [ ! -n "$WERCKER_S3_WEBSITE_REGION" ]
-  then
-    fail 'missing or empty option region, please check wercker.yml';
-  fi
 }
 
-install_java() {
+install_java_ruby() {
   sudo apt-get update;
-  sudo apt-get install -y default-jre;
-}
-
-install_ruby() {
-  sudo apt-get update;
-  sudo apt-get install -y ruby1.9.1 rubygems1.9.1;
+  sudo apt-get install -y default-jre ruby1.9.1 rubygems1.9.1;
 }
 
 install_s3_website() {
@@ -38,7 +28,7 @@ install_s3_website() {
 }
 
 change_source_dir() {
-  SOURCE_DIR="$WERCKER_ROOT/$WERCKER_S3_WEBSITE_SOURCE_DIR";
+  SOURCE_DIR="$WERCKER_ROOT/$SOURCE";
   if cd "$SOURCE_DIR" ;
   then
     debug "changed directory $SOURCE_DIR, content is: $(ls -l)";
@@ -72,8 +62,7 @@ EOF
 info 'setup step';
 
 init_wercker_environment_variables;
-install_java;
-install_ruby;
+install_java_ruby;
 install_s3_website;
 change_source_dir;
 create_s3_website_yml_file;
