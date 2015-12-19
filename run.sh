@@ -28,7 +28,14 @@ install_s3_website() {
 }
 
 change_source_dir() {
-  SOURCE_DIR="$WERCKER_ROOT/$SOURCE";
+  BASE_DIR="$WERCKER_ROOT/$SOURCE";
+  if [ -n "$DEPLOY_DIR"]
+  then
+    SOURCE_DIR="$BASE_DIR/$DEPLOY_DIR"
+  else
+    SOURCE_DIR="$BASE_DIR"
+  fi
+
   if cd "$SOURCE_DIR" ;
   then
     debug "changed directory $SOURCE_DIR, content is: $(ls -l)";
@@ -46,15 +53,15 @@ s3_bucket: $WERCKER_S3_WEBSITE_BUCKET
 s3_endpoint: $WERCKER_S3_WEBSITE_REGION
 max_age: 300
 gzip:
-- .html
-- .css
-- .js
-- .svg
-- .ttf
-- .eot
-- .woff
+  - .html
+  - .css
+  - .js
+  - .svg
+  - .ttf
+  - .eot
+  - .woff
 exclude_from_upload:
-- .DS_Store
+  - .DS_Store
 EOF
 
 }
